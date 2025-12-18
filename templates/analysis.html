@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Analysis for {{ ticker }} ({{ period }})</h2>
+
+  <div class="row">
+    <!-- Latest Stats -->
+    <div class="col-md-4">
+      <h5>📊 Latest Stats</h5>
+      <ul class="list-group">
+        <li class="list-group-item">Open: {{ stats.open }}</li>
+        <li class="list-group-item">Close: {{ stats.close }}</li>
+        <li class="list-group-item">High: {{ stats.high }}</li>
+        <li class="list-group-item">Low: {{ stats.low }}</li>
+        <li class="list-group-item">Volume: {{ stats.volume }}</li>
+      </ul>
+    </div>
+
+    <!-- Chart -->
+    <div class="col-md-8">
+      <div id="chart" style="height:500px;"></div>
+    </div>
+  </div>
+
+  <hr>
+  <h5>💾 Download Raw Data</h5>
+  <form method="post" action="/download_csv">
+    <input type="hidden" name="csv_data" value='{{ raw_csv | replace("'", "\\'") }}'>
+    <button class="btn btn-outline-secondary mt-2">Download CSV</button>
+  </form>
+</div>
+
+<!-- Plotly for charts -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+  // Parse JSON data passed from Flask
+  const maData = JSON.parse(`{{ ma_json | safe }}`);
+  const candlestickData = JSON.parse(`{{ candlestick_json | safe }}`);
+
+  // Prepare Candlestick trace
+  const dates = Object.keys(candlestickData);
+  const open = Object.values(candlestickData).map(d => d.Open);
+  const high = Object.values(candlestickData).map(d => d.High);
+  const low = Object.values(candlestickData).map(d => d.Low);
+  const close = Object.values(candlestickData).map(d => d.Close);
+
+  const candleTrace = {
+    x: dates,
+    open: open,
+    high: high,
+    low: low,
+    close: close,
+    type: 'candlestick',
+    name: '{{ ticker }}',
+    increasing: { line: { color: 'green' } },
+    decreasing: { line: { color: 'red' } }
+  };
+
+  // Moving Averages traces
+  const maTraces = [];
+  if (maData.length > 0) {
+    const maKeys = Object.keys(maData[0]).filter(k => k !== 'Close');
+    const xVals = Array.from({ length: maData.length }, (_, i) => i);
+
+    maKeys.forEach(maKey => {
+      maTraces.push({
+        x: dates.slice(-maData.length),
+        y: maData.map(row => row[maKey]),
+        type: 'scatter',
+        mode: 'lines',
+        name: maKey,
+      });
+    });
+  }
+
+  // Combine all traces
+  const layout = {
+    title: `{{ ticker }} Stock Trend`,
+    xaxis: { title: 'Date', rangeslider: { visible: false } },
+    yaxis: { title: 'Price (USD)' },
+    template: 'plotly_dark',
+    plot_bgcolor: '#111',
+    paper_bgcolor: '#111',
+    font: { color: '#eee' },
+  };
+
+  Plotly.newPlot('chart', [candleTrace, ...maTraces], layout);
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-4">Stock Market Trend Analysis</h1>
+<p>Enter a stock ticker to analyze its historical trends and forecast future prices.</p>
+
+
+<form method="post" action="/analyze" class="row g-3">
+<div class="col-md-4">
+<label for="ticker" class="form-label">Ticker</label>
+<input type="text" class="form-control" id="ticker" name="ticker" placeholder="AAPL" required>
+</div>
+<div class="col-md-4">
+<label for="period" class="form-label">Time Range</label>
+<select id="period" name="period" class="form-select">
+<option value="1mo">1 month</option>
+<option value="3mo">3 months</option>
+<option value="6mo">6 months</option>
+<option value="1y" selected>1 year</option>
+<option value="5y">5 years</option>
+<option value="max">Max</option>
+</select>
+</div>
+<div class="col-md-4">
+<label for="analysis_type" class="form-label">Analysis Type</label>
+<select id="analysis_type" name="analysis_type" class="form-select">
+<option value="moving_average">Moving Average</option>
+<option value="candlestick">Candlestick</option>
+<option value="forecast">Forecast</option>
+</select>
+</div>
+<div class="col-12 mt-3">
+<button type="submit" class="btn btn-primary">Analyze</button>
+</div>
+</form>
+
+
+{% endblock %}
