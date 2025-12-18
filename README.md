@@ -1,6 +1,4 @@
-# Create README.md file for the user
-
-readme_content = """# 📈 Stock Market Analysis & Forecasting Web App
+"""# 📈 Stock Market Analysis & Forecasting Web App
 
 A full-stack **Flask-based web application** for stock market analysis and price forecasting.  
 The app fetches real-time stock data, performs technical analysis, and predicts future prices using **ARIMA and LSTM models**.
@@ -124,9 +122,3 @@ India
 
 ⭐ If you like this project, give it a star on GitHub!
 """
-
-file_path = "/mnt/data/README.md"
-with open(file_path, "w", encoding="utf-8") as f:
-    f.write(readme_content)
-
-file_path
