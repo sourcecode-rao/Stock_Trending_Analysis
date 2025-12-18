@@ -1,4 +1,4 @@
-"""# 📈 Stock Market Analysis & Forecasting Web App
+# 📈 Stock Market Analysis & Forecasting Web App
 
 A full-stack **Flask-based web application** for stock market analysis and price forecasting.  
 The app fetches real-time stock data, performs technical analysis, and predicts future prices using **ARIMA and LSTM models**.
